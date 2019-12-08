@@ -44,9 +44,10 @@ const server = new ApolloServer({
 				.catch(err => console.log('error graphql', err));
 			return myUser;
 		}
-		return {};
+		return null;
 	},
 });
+
 const app = express();
 app.use(bodyParser.json());
 app.use((req, res, next) => {
@@ -58,6 +59,7 @@ app.use((req, res, next) => {
 	}
 	next();
 });
+
 app.use(isAuth);
 
 var csvName;
@@ -87,17 +89,9 @@ server.applyMiddleware({ app, path: '/graphql' });
 applyDbRelations();
 
 const PORT = 3001;
-const HOST = '127.0.0.1';
 
 try {
-	// sequelize
-	// 	.authenticate()
-	// 	.then(() => {
-	// 		console.log('Connection has been established successfully.');
-	// 	})
-	// 	.catch(err => {
-	// 		console.error('Unable to connect to the database:', err);
-	// 	});
+	console.log(process.env.AWS_RDS_DB_USER);
 	sequelize
 		.sync()
 		.then(() => populateDBMockData())
